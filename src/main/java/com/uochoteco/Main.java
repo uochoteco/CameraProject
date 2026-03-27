@@ -7,22 +7,22 @@ import org.opencv.videoio.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-//import com.google.mediapipe.tasks.vision.handlandmarker.handLandmarker;
-//import com.google.mediapipe.tasks.vision.handlandmarker.handLandmarkerResult;
-//import com.google.mediapipe.tasks.vision.handlandmarker.handLandmarker.HandLandmarkerOptions;
-//import com.google.mediapipe.tasks.core.BaseOptions;
+
 
 public class Main extends JPanel {
-
+    private static int pNum = 0;
     private BufferedImage image;
     public static void main(String[] args) 
     {
         OpenCV.loadShared();
         System.out.println("Hello world!");
         System.out.println("Version: " + Core.VERSION);
-        JFrame frame = new JFrame("Hand Tracking Sphere Creation Project");
+        JFrame frame = new JFrame("Camera");
         Main panel = new Main();
         VideoCapture camera = new VideoCapture(0);
         Mat frameMatrix = new Mat();
@@ -30,6 +30,21 @@ public class Main extends JPanel {
         frame.setSize(640, 480);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        frame.addKeyListener(new KeyAdapter()
+        
+        { public void keyPressed(KeyEvent e)
+            { 
+                if(e.getKeyCode() == KeyEvent.VK_SPACE)
+                {
+                    System.out.println("Space bar pressed");
+                    getPic(panel.image, pNum);
+                    pNum++;
+                }
+            }
+        });
+            
+        
         
         if(camera.isOpened() == false)
             {
@@ -58,6 +73,17 @@ public class Main extends JPanel {
         BufferedImage image = new BufferedImage(cols, rows, type);
         System.arraycopy(data, 0, ((DataBufferByte)image.getRaster().getDataBuffer()).getData(), 0, data.length);
         return image;
+    }
+
+    public static void getPic(BufferedImage cFrame, int count)
+    {
+        JFrame pFrame = new JFrame("Picture " + count);
+        Main picPanel = new Main();
+        pFrame.add(picPanel);
+        picPanel.image = cFrame;
+        pFrame.setSize(640, 480);
+        pFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        pFrame.setVisible(true);
     }
 
     @Override
