@@ -15,6 +15,7 @@ import java.awt.image.DataBufferByte;
 
 
 public class Main extends JPanel {
+    private static int vNum = 0;
     private static int pNum = 0;
     private BufferedImage image;
     public static void main(String[] args) 
@@ -36,10 +37,22 @@ public class Main extends JPanel {
         { public void keyPressed(KeyEvent e)
             { 
                 if(e.getKeyCode() == KeyEvent.VK_SPACE)
-                {
+                { 
                     System.out.println("Space bar pressed");
                     getPic(panel.image, pNum);
                     pNum++;
+                }
+            }
+        });
+        frame.addKeyListener(new KeyAdapter()
+        
+        { public void keyPressed(KeyEvent e)
+            { 
+                if(e.getKeyCode() == KeyEvent.VK_V)
+                { 
+                    System.out.println("V pressed");
+                    getVid(vNum);
+                    vNum++;
                 }
             }
         });
@@ -85,6 +98,49 @@ public class Main extends JPanel {
         pFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pFrame.setVisible(true);
     }
+
+    public static void getVid(int count)
+    {
+        final boolean[] Recording = {true};
+        JFrame vFrame = new JFrame("Video " + count);
+        Main vidPanel = new Main();
+        vFrame.add(vidPanel);
+        vFrame.setSize(640, 480);
+        vFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        vFrame.setVisible(true);
+        vFrame.addKeyListener(new KeyAdapter()
+        
+        { public void keyPressed(KeyEvent e)
+            { 
+                if(e.getKeyCode() == KeyEvent.VK_SPACE)
+                { 
+                    Recording[0] = false;
+                }
+            }
+        });
+        new Thread(() -> {
+            VideoCapture camera = new VideoCapture(0);
+            Mat frameMatrix = new Mat();
+            if(camera.isOpened() == false)
+                {
+                    System.out.println("Camera Fail :(");
+                    return;
+                }
+        
+            while(Recording[0])
+                {
+                    if(camera.read(frameMatrix))
+                        {
+                            vidPanel.image = matrixToBufferedImage(frameMatrix);
+                            vidPanel.repaint();
+                        }
+                }
+                camera.release();
+        }).start();
+
+    }
+
+
 
     @Override
     protected void paintComponent(Graphics x)
