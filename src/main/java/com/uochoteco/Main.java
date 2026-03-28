@@ -5,6 +5,8 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.imgproc.Imgproc;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -12,6 +14,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.File;
+import java.io.IOException;
 
 
 public class Main extends JPanel {
@@ -97,6 +101,11 @@ public class Main extends JPanel {
         pFrame.setSize(640, 480);
         pFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pFrame.setVisible(true);
+        try {
+            ImageIO.write(picPanel.image, "png", new File("picture"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void getVid(int count)
