@@ -101,11 +101,22 @@ public class Main extends JPanel {
         pFrame.setSize(640, 480);
         pFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pFrame.setVisible(true);
-        try {
-            ImageIO.write(picPanel.image, "png", new File("picture"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        pFrame.addKeyListener(new KeyAdapter()
+        
+        { public void keyPressed(KeyEvent i)
+            { 
+                if(i.getKeyCode() == KeyEvent.VK_SPACE)
+                { 
+                    try {
+                        ImageIO.write(picPanel.image, "png", new File("picture.png"));
+                        System.out.println("worked");
+                    }catch (IOException e) {
+                        System.out.println("didn't work");
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     public static void getVid(int count)
