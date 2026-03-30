@@ -108,7 +108,7 @@ public class Main extends JPanel {
                 if(i.getKeyCode() == KeyEvent.VK_SPACE)
                 { 
                     try {
-                        ImageIO.write(picPanel.image, "png", new File("picture.png"));
+                        ImageIO.write(picPanel.image, "png", new File("picture " + count + ".png"));
                         System.out.println("worked");
                     }catch (IOException e) {
                         System.out.println("didn't work");
