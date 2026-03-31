@@ -6,6 +6,9 @@ import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -16,12 +19,15 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class Main extends JPanel {
     private static int vNum = 0;
     private static int pNum = 0;
     private BufferedImage image;
+    final static boolean[] fileDir = {true};
     public static void main(String[] args) 
     {
         OpenCV.loadShared();
@@ -94,6 +100,7 @@ public class Main extends JPanel {
 
     public static void getPic(BufferedImage cFrame, int count)
     {
+        final int[] num = {0};
         JFrame pFrame = new JFrame("Picture " + count);
         Main picPanel = new Main();
         pFrame.add(picPanel);
@@ -108,8 +115,18 @@ public class Main extends JPanel {
                 if(i.getKeyCode() == KeyEvent.VK_SPACE)
                 { 
                     try {
-                        ImageIO.write(picPanel.image, "png", new File("picture " + count + ".png"));
-                        System.out.println("worked");
+                        while(fileDir[0])
+                        {
+                            File folder = new File("picFolder_" + num[0]);
+                            if (!folder.exists()) 
+                            {
+                                folder.mkdirs();
+                                fileDir[0] = false;
+                            } else {
+                                num[0]++;
+                            }
+                        }
+                        ImageIO.write(picPanel.image, "png", new File("picFolder_" + num[0] + "/picture_" + count + ".png"));
                     }catch (IOException e) {
                         System.out.println("didn't work");
                         e.printStackTrace();
