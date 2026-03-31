@@ -27,7 +27,6 @@ public class Main extends JPanel {
     private static int vNum = 0;
     private static int pNum = 0;
     private BufferedImage image;
-    final static boolean[] fileDir = {true};
     public static void main(String[] args) 
     {
         OpenCV.loadShared();
@@ -108,29 +107,28 @@ public class Main extends JPanel {
         pFrame.setSize(640, 480);
         pFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pFrame.setVisible(true);
-        pFrame.addKeyListener(new KeyAdapter()
-        
-        { public void keyPressed(KeyEvent i)
-            { 
-                if(i.getKeyCode() == KeyEvent.VK_SPACE)
-                { 
-                    try {
-                        while(fileDir[0])
-                        {
-                            File folder = new File("picFolder_" + num[0]);
-                            if (!folder.exists()) 
-                            {
+        pFrame.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent i) {
+                if (i.getKeyCode() == KeyEvent.VK_SPACE) {
+                    new Thread(() -> {
+                        try {
+                            File folder = new File("picFolder");
+                            if (!folder.exists()) {
                                 folder.mkdirs();
-                                fileDir[0] = false;
-                            } else {
-                                num[0]++;
                             }
+                            int num = 0;
+                            File temp;
+                            do {
+                                temp = new File(folder, "picture_" + count + "_" + num + ".png");
+                                num++;
+                            } while (temp.exists());
+                            ImageIO.write(picPanel.image, "png", temp);
+                            System.out.println("Saved: " + temp.getAbsolutePath());
+                        } catch (IOException e) {
+                            System.out.println("Save failed");
+                            e.printStackTrace();
                         }
-                        ImageIO.write(picPanel.image, "png", new File("picFolder_" + num[0] + "/picture_" + count + ".png"));
-                    }catch (IOException e) {
-                        System.out.println("didn't work");
-                        e.printStackTrace();
-                    }
+                    }).start();
                 }
             }
         });
