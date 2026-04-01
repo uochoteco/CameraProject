@@ -37,7 +37,7 @@ public class Main extends JPanel {
         VideoCapture camera = new VideoCapture(0);
         Mat frameMatrix = new Mat();
         frame.add(panel);
-        frame.setSize(640, 480);
+        frame.setSize(640, 360);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
@@ -73,11 +73,11 @@ public class Main extends JPanel {
                 System.out.println("Camera Fail :(");
                 return;
             }
-        
         while(true)
             {
                 if(camera.read(frameMatrix))
                     {
+                        Core.flip(frameMatrix, frameMatrix, 1);
                         panel.image = matrixToBufferedImage(frameMatrix);
                         panel.repaint();
                     }
@@ -99,12 +99,11 @@ public class Main extends JPanel {
 
     public static void getPic(BufferedImage cFrame, int count)
     {
-        final int[] num = {0};
         JFrame pFrame = new JFrame("Picture " + count);
         Main picPanel = new Main();
         pFrame.add(picPanel);
         picPanel.image = cFrame;
-        pFrame.setSize(640, 480);
+        pFrame.setSize(640, 360);
         pFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pFrame.setVisible(true);
         pFrame.addKeyListener(new KeyAdapter() {
@@ -140,7 +139,7 @@ public class Main extends JPanel {
         JFrame vFrame = new JFrame("Video " + count);
         Main vidPanel = new Main();
         vFrame.add(vidPanel);
-        vFrame.setSize(640, 480);
+        vFrame.setSize(640, 360);
         vFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         vFrame.setVisible(true);
         vFrame.addKeyListener(new KeyAdapter()
@@ -166,6 +165,7 @@ public class Main extends JPanel {
                 {
                     if(camera.read(frameMatrix))
                         {
+                            Core.flip(frameMatrix, frameMatrix, 1);
                             vidPanel.image = matrixToBufferedImage(frameMatrix);
                             vidPanel.repaint();
                         }
@@ -183,7 +183,7 @@ public class Main extends JPanel {
         super.paintComponent(x);
         if(image != null)
             {
-                x.drawImage(image, 0, 0, this);
+                x.drawImage(image, 0, 0, 640, 360, this);
             }
     }
 }
