@@ -8,7 +8,7 @@ import org.opencv.imgproc.Imgproc;
 
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
-
+import org.opencv.videoio.VideoWriter;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -122,7 +122,7 @@ public class Main extends JPanel {
                                 num++;
                             } while (temp.exists());
                             ImageIO.write(picPanel.image, "png", temp);
-                            System.out.println("Saved: " + temp.getAbsolutePath());
+                            System.out.println("Saved");
                         } catch (IOException e) {
                             System.out.println("Save failed");
                             e.printStackTrace();
@@ -146,7 +146,7 @@ public class Main extends JPanel {
         
         { public void keyPressed(KeyEvent e)
             { 
-                if(e.getKeyCode() == KeyEvent.VK_SPACE)
+                if(e.getKeyCode() == KeyEvent.VK_V)
                 { 
                     Recording[0] = false;
                 }
