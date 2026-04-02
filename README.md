@@ -1,2 +1,2 @@
-# HandTracking-SphereCreation
-This program uses hand tracking and camera to first assign hands to hand one and hand two. Then by drawing a circle with hand one you can create a circle by moving hand two away from the point of origin of when the circle was drawn. By using the distance it can make a diameter for a sphere.
+# CameraProject
+This program uses JPanel to make a camera window where you can take photos and videos and save both to your computer. You can take a picture by pressing space then save it by pressing space on its window again. It will be saved to the folder picFolder. You can also take videos bby pressing v to begin recording and pressing v again on the video window to stop recordeing. After that you can press space to save that video 
