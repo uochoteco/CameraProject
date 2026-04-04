@@ -5,7 +5,8 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.imgproc.Imgproc;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import org.opencv.videoio.VideoWriter;
@@ -133,46 +134,72 @@ public class Main extends JPanel {
         });
     }
 
-    public static void getVid(int count)
-    {
+    public static void getVid(int count) {
         final boolean[] Recording = {true};
+        final boolean[] isSaved = {false};
         JFrame vFrame = new JFrame("Video " + count);
         Main vidPanel = new Main();
         vFrame.add(vidPanel);
         vFrame.setSize(640, 360);
         vFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         vFrame.setVisible(true);
-        vFrame.addKeyListener(new KeyAdapter()
-        
-        { public void keyPressed(KeyEvent e)
-            { 
-                if(e.getKeyCode() == KeyEvent.VK_V)
-                { 
+
+        vFrame.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_V) {
                     Recording[0] = false;
+                }
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    isSaved[0] = true;
                 }
             }
         });
+
         new Thread(() -> {
             VideoCapture camera = new VideoCapture(0);
             Mat frameMatrix = new Mat();
-            if(camera.isOpened() == false)
-                {
-                    System.out.println("Camera Fail :(");
-                    return;
-                }
-        
-            while(Recording[0])
-                {
-                    if(camera.read(frameMatrix))
-                        {
-                            Core.flip(frameMatrix, frameMatrix, 1);
-                            vidPanel.image = matrixToBufferedImage(frameMatrix);
-                            vidPanel.repaint();
-                        }
-                }
-                camera.release();
-        }).start();
+            VideoWriter writer = new VideoWriter();
 
+            if (!camera.isOpened()) {
+                System.out.println("Camera Error");
+                return;
+            }
+
+            while (Recording[0]) {
+                if (camera.read(frameMatrix)) {
+                    Core.flip(frameMatrix, frameMatrix, 1);
+                    vidPanel.image = matrixToBufferedImage(frameMatrix);
+                    vidPanel.repaint();
+
+                    if (isSaved[0]) {
+                        if (!writer.isOpened()) {
+                            File folder = new File(System.getProperty("user.dir"), "vidFolder");
+                            if (!folder.exists()) folder.mkdirs();
+                            int fileNum = 0;
+                            File videoFile;
+                            do {
+                                videoFile = new File(folder, "video_" + count + "_" + fileNum + ".mov");
+                                fileNum++;
+                            } while (videoFile.exists());
+                            int fourcc = VideoWriter.fourcc('M', 'J', 'P', 'G'); 
+                            writer.open(videoFile.getAbsolutePath(), fourcc, 20.0, frameMatrix.size());
+                            if(writer.isOpened()) {
+                                System.out.println("SAVING: press V to finish saving video");
+                            } else {
+                                System.out.println("FAILURE: ERROR");
+                            }
+                        }
+                        writer.write(frameMatrix);
+                    }
+                }
+            }
+
+            if (writer.isOpened()) {
+                writer.release();
+                System.out.println("FINISHED: saved");
+            }
+            camera.release();
+        }).start();
     }
 
 

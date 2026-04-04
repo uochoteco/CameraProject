@@ -20,13 +20,5 @@
             <artifactId>opencv</artifactId>
             <version>4.9.0-0</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.google.mediapipe</groupId>
-            <artifactId>tasks-vision</artifactId>
-            <version>0.10.14</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/tasks-vision-0.10.14.jar</systemPath>
-        </dependency>
     </dependencies>
 </project>
