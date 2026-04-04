@@ -29,3 +29,4 @@ replay_pid*
 .classpath
 *.class
 *.png
+*.mov
