@@ -61,7 +61,7 @@ public class Main extends JPanel {
                 if(e.getKeyCode() == KeyEvent.VK_V)
                 { 
                     System.out.println("V pressed");
-                    getVid(vNum);
+                    getVid(vNum, camera);
                     vNum++;
                 }
             }
@@ -134,73 +134,54 @@ public class Main extends JPanel {
         });
     }
 
-    public static void getVid(int count) {
-        final boolean[] Recording = {true};
-        final boolean[] isSaved = {false};
-        JFrame vFrame = new JFrame("Video " + count);
-        Main vidPanel = new Main();
-        vFrame.add(vidPanel);
-        vFrame.setSize(640, 360);
-        vFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        vFrame.setVisible(true);
+    public static void getVid(int count, VideoCapture camera) {
+    final boolean[] isRunning = {true};
+    final boolean[] isSaving = {false};
+    
+    JFrame vFrame = new JFrame("Video Recorder " + count);
+    Main vidPanel = new Main();
+    vFrame.add(vidPanel);
+    vFrame.setSize(640, 360);
+    vFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    vFrame.setVisible(true);
 
-        vFrame.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_V) {
-                    Recording[0] = false;
-                }
-                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    isSaved[0] = true;
-                }
+    vFrame.addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                isSaving[0] = !isSaving[0];
             }
-        });
-
-        new Thread(() -> {
-            VideoCapture camera = new VideoCapture(0);
-            Mat frameMatrix = new Mat();
-            VideoWriter writer = new VideoWriter();
-
-            if (!camera.isOpened()) {
-                System.out.println("Camera Error");
-                return;
+            if (e.getKeyCode() == KeyEvent.VK_V) {
+                isRunning[0] = false;
             }
+        }
+    });
 
-            while (Recording[0]) {
-                if (camera.read(frameMatrix)) {
-                    Core.flip(frameMatrix, frameMatrix, 1);
-                    vidPanel.image = matrixToBufferedImage(frameMatrix);
-                    vidPanel.repaint();
+    new Thread(() -> {
+        Mat frameMatrix = new Mat();
+        VideoWriter writer = new VideoWriter();
+        while (isRunning[0]) {
+            if (camera.read(frameMatrix)) {
+                Core.flip(frameMatrix, frameMatrix, 1);
+                vidPanel.image = matrixToBufferedImage(frameMatrix);
+                vidPanel.repaint();
 
-                    if (isSaved[0]) {
-                        if (!writer.isOpened()) {
-                            File folder = new File(System.getProperty("user.dir"), "vidFolder");
-                            if (!folder.exists()) folder.mkdirs();
-                            int fileNum = 0;
-                            File videoFile;
-                            do {
-                                videoFile = new File(folder, "video_" + count + "_" + fileNum + ".mov");
-                                fileNum++;
-                            } while (videoFile.exists());
-                            int fourcc = VideoWriter.fourcc('M', 'J', 'P', 'G'); 
-                            writer.open(videoFile.getAbsolutePath(), fourcc, 20.0, frameMatrix.size());
-                            if(writer.isOpened()) {
-                                System.out.println("SAVING: press V to finish saving video");
-                            } else {
-                                System.out.println("FAILURE: ERROR");
-                            }
-                        }
-                        writer.write(frameMatrix);
+                if (isSaving[0]) {
+                    if (!writer.isOpened()) {
+                        File folder = new File("vidFolder");
+                        if (!folder.exists()) folder.mkdirs();
+                        String path = new File(folder, "video_" + count + ".mov").getAbsolutePath();
+                        writer.open(path, VideoWriter.fourcc('M','J','P','G'), 20.0, frameMatrix.size());
                     }
+                    writer.write(frameMatrix);
                 }
             }
-
-            if (writer.isOpened()) {
-                writer.release();
-                System.out.println("FINISHED: saved");
-            }
-            camera.release();
-        }).start();
-    }
+        }
+        if (writer.isOpened()) {
+            writer.release();
+            System.out.println("FINISHED: saved.");
+        }
+    }).start();
+}
 
 
 
