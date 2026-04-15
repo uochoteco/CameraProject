@@ -30,24 +30,30 @@ public class Main extends JPanel {
     private BufferedImage image;
     public static void main(String[] args) 
     {
+        //this sets up and checks if the imports worked
         OpenCV.loadShared();
         System.out.println("Hello world!");
         System.out.println("Version: " + Core.VERSION);
+        //this line insantiates the window for the main camera
         JFrame frame = new JFrame("Camera");
         Main panel = new Main();
+        //begins video recording by setting up a video capture object
         VideoCapture camera = new VideoCapture(0);
+        //create matrix to store the pixels for the window to show
         Mat frameMatrix = new Mat();
         frame.add(panel);
         frame.setSize(640, 360);
+        //makes the program close when the main window closes
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-
+        //adds a key listener object this allows me to detect if certain keys are pressed
         frame.addKeyListener(new KeyAdapter()
-        
+        // code for space bar press
         { public void keyPressed(KeyEvent e)
             { 
                 if(e.getKeyCode() == KeyEvent.VK_SPACE)
                 { 
+                    //calls the picture taking function and updates the amount of pictures taken
                     System.out.println("Space bar pressed");
                     getPic(panel.image, pNum);
                     pNum++;
@@ -55,11 +61,12 @@ public class Main extends JPanel {
             }
         });
         frame.addKeyListener(new KeyAdapter()
-        
+        //code for v pressed
         { public void keyPressed(KeyEvent e)
             { 
                 if(e.getKeyCode() == KeyEvent.VK_V)
                 { 
+                    //calls video taking function and updates number of pictures taken
                     System.out.println("V pressed");
                     getVid(vNum, camera);
                     vNum++;
