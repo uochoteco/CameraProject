@@ -1,5 +1,5 @@
 package com.uochoteco;
-
+//imports: some of these were things i imported for troiuble shooting but didnt end up using
 import nu.pattern.OpenCV;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -75,17 +75,20 @@ public class Main extends JPanel {
         });
             
         
-        
+        //checks if camera set up was succsessful to avoid an exception
         if(camera.isOpened() == false)
             {
                 System.out.println("Camera Fail :(");
                 return;
             }
+        //if camera is working then it keeps on updating the image in the window to actually show the camera feed
         while(true)
             {
                 if(camera.read(frameMatrix))
                     {
+                        //the flip is because the way it was before was mirrored
                         Core.flip(frameMatrix, frameMatrix, 1);
+                        //these methods are what actually like updates the image
                         panel.image = matrixToBufferedImage(frameMatrix);
                         panel.repaint();
                     }
@@ -94,9 +97,11 @@ public class Main extends JPanel {
 
     public static BufferedImage matrixToBufferedImage(Mat matrix)
     {
+        //these variables make it so I dont need to retype all of that constantly
         int cols = matrix.cols();
         int rows = matrix.rows();
         int elementSize = (int)matrix.elemSize();
+        //createws a byte array that is the right size to hold all the array data
         byte[] data = new byte[cols * rows * elementSize];
         matrix.get(0, 0, data);
         int type = matrix.channels() == 1 ? BufferedImage.TYPE_BYTE_GRAY: BufferedImage.TYPE_3BYTE_BGR;
