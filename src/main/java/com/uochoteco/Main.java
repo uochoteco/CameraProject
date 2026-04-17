@@ -104,14 +104,18 @@ public class Main extends JPanel {
         //createws a byte array that is the right size to hold all the array data
         byte[] data = new byte[cols * rows * elementSize];
         matrix.get(0, 0, data);
+        //this gets what color type the buffered image will be in
         int type = matrix.channels() == 1 ? BufferedImage.TYPE_BYTE_GRAY: BufferedImage.TYPE_3BYTE_BGR;
+        //this makes the buffered image from what we have from the matrix
         BufferedImage image = new BufferedImage(cols, rows, type);
         System.arraycopy(data, 0, ((DataBufferByte)image.getRaster().getDataBuffer()).getData(), 0, data.length);
         return image;
     }
 
+    //this is the picture taking method
     public static void getPic(BufferedImage cFrame, int count)
     {
+        //this sets up a new window where it keeps the frame it captured so you can see it before you save it to your device
         JFrame pFrame = new JFrame("Picture " + count);
         Main picPanel = new Main();
         pFrame.add(picPanel);
@@ -119,81 +123,90 @@ public class Main extends JPanel {
         pFrame.setSize(640, 360);
         pFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pFrame.setVisible(true);
+        // this makes it so if you press space on this window it saves
         pFrame.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent i) {
                 if (i.getKeyCode() == KeyEvent.VK_SPACE) {
+                    // new thread lets us run two while loops at once the first being the main camera updating one and the second in here
                     new Thread(() -> {
+                        //this will make a folder if you don't have one named picFolder yet
                         try {
                             File folder = new File("picFolder");
                             if (!folder.exists()) {
                                 folder.mkdirs();
                             }
                             int num = 0;
+                            //makes an empty file object
                             File temp;
+                            //This makes a new file with the count variabel based on how many pictures it took in this setion
                             do {
                                 temp = new File(folder, "picture_" + count + "_" + num + ".png");
                                 num++;
+                            //while a file with this name already exists it increments num by one until there is a unique name
                             } while (temp.exists());
                             ImageIO.write(picPanel.image, "png", temp);
                             System.out.println("Saved");
+                        //this is just if any part of this goes wrong for any reason so the program doesn't crash
                         } catch (IOException e) {
                             System.out.println("Save failed");
                             e.printStackTrace();
                         }
+                    //end of thread
                     }).start();
                 }
             }
         });
     }
 
+    //video taking method
     public static void getVid(int count, VideoCapture camera) {
-    final boolean[] isRunning = {true};
-    final boolean[] isSaving = {false};
-    
-    JFrame vFrame = new JFrame("Video Recorder " + count);
-    Main vidPanel = new Main();
-    vFrame.add(vidPanel);
-    vFrame.setSize(640, 360);
-    vFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    vFrame.setVisible(true);
+        final boolean[] isRunning = {true};
+        final boolean[] isSaving = {false};
+        
+        JFrame vFrame = new JFrame("Video Recorder " + count);
+        Main vidPanel = new Main();
+        vFrame.add(vidPanel);
+        vFrame.setSize(640, 360);
+        vFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        vFrame.setVisible(true);
 
-    vFrame.addKeyListener(new KeyAdapter() {
-        public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                isSaving[0] = !isSaving[0];
-            }
-            if (e.getKeyCode() == KeyEvent.VK_V) {
-                isRunning[0] = false;
-            }
-        }
-    });
-
-    new Thread(() -> {
-        Mat frameMatrix = new Mat();
-        VideoWriter writer = new VideoWriter();
-        while (isRunning[0]) {
-            if (camera.read(frameMatrix)) {
-                Core.flip(frameMatrix, frameMatrix, 1);
-                vidPanel.image = matrixToBufferedImage(frameMatrix);
-                vidPanel.repaint();
-
-                if (isSaving[0]) {
-                    if (!writer.isOpened()) {
-                        File folder = new File("vidFolder");
-                        if (!folder.exists()) folder.mkdirs();
-                        String path = new File(folder, "video_" + count + ".mov").getAbsolutePath();
-                        writer.open(path, VideoWriter.fourcc('M','J','P','G'), 20.0, frameMatrix.size());
-                    }
-                    writer.write(frameMatrix);
+        vFrame.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    isSaving[0] = !isSaving[0];
+                }
+                if (e.getKeyCode() == KeyEvent.VK_V) {
+                    isRunning[0] = false;
                 }
             }
-        }
-        if (writer.isOpened()) {
-            writer.release();
-            System.out.println("FINISHED: saved.");
-        }
-    }).start();
-}
+        });
+
+        new Thread(() -> {
+            Mat frameMatrix = new Mat();
+            VideoWriter writer = new VideoWriter();
+            while (isRunning[0]) {
+                if (camera.read(frameMatrix)) {
+                    Core.flip(frameMatrix, frameMatrix, 1);
+                    vidPanel.image = matrixToBufferedImage(frameMatrix);
+                    vidPanel.repaint();
+
+                    if (isSaving[0]) {
+                        if (!writer.isOpened()) {
+                            File folder = new File("vidFolder");
+                            if (!folder.exists()) folder.mkdirs();
+                            String path = new File(folder, "video_" + count + ".mov").getAbsolutePath();
+                            writer.open(path, VideoWriter.fourcc('M','J','P','G'), 20.0, frameMatrix.size());
+                        }
+                        writer.write(frameMatrix);
+                    }
+                }
+            }
+            if (writer.isOpened()) {
+                writer.release();
+                System.out.println("FINISHED: saved.");
+            }
+        }).start();
+    }
 
 
 
