@@ -174,10 +174,14 @@ public class Main extends JPanel {
         //listens for space or v pressed
         vFrame.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
+                //checks for space
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    //changes variable that is checked in thread to see if it will begin saving
                     isSaving[0] = !isSaving[0];
                 }
+                //checks for v
                 if (e.getKeyCode() == KeyEvent.VK_V) {
+                    //changes variable for thread to now when to stop running the video and saving
                     isRunning[0] = false;
                 }
             }
