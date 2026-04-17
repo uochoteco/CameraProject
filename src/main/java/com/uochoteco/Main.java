@@ -132,9 +132,7 @@ public class Main extends JPanel {
                         //this will make a folder if you don't have one named picFolder yet
                         try {
                             File folder = new File("picFolder");
-                            if (!folder.exists()) {
-                                folder.mkdirs();
-                            }
+                            if (!folder.exists()) folder.mkdirs();
                             int num = 0;
                             //makes an empty file object
                             File temp;
@@ -186,18 +184,23 @@ public class Main extends JPanel {
                 }
             }
         });
-
+        //makes a new thread for the window to be updated to show feed
         new Thread(() -> {
+            //This creates a second video feed window by taking the data from the same camera as the main feed
             Mat frameMatrix = new Mat();
             VideoWriter writer = new VideoWriter();
             while (isRunning[0]) {
+                //by doing this we minimize the amount of memory we take up with camera objects
                 if (camera.read(frameMatrix)) {
+                    //it alos lets this program work on both windows and mac
                     Core.flip(frameMatrix, frameMatrix, 1);
                     vidPanel.image = matrixToBufferedImage(frameMatrix);
                     vidPanel.repaint();
 
                     if (isSaving[0]) {
+                        //this if statement is incase the save button is hit multiple times
                         if (!writer.isOpened()) {
+                            //creates a new vid folder
                             File folder = new File("vidFolder");
                             if (!folder.exists()) folder.mkdirs();
                             String path = new File(folder, "video_" + count + ".mov").getAbsolutePath();
