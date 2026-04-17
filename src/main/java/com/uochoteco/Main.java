@@ -155,21 +155,23 @@ public class Main extends JPanel {
                     }).start();
                 }
             }
+        //end of on space pressed part
         });
     }
 
     //video taking method
     public static void getVid(int count, VideoCapture camera) {
+        //you have to make variables like this or else you can't change them in the keyPressed functions unless they are final
         final boolean[] isRunning = {true};
         final boolean[] isSaving = {false};
-        
+        //this makes a new from for the video recording
         JFrame vFrame = new JFrame("Video Recorder " + count);
         Main vidPanel = new Main();
         vFrame.add(vidPanel);
         vFrame.setSize(640, 360);
         vFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         vFrame.setVisible(true);
-
+        //listens for space or v pressed
         vFrame.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
