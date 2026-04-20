@@ -203,6 +203,7 @@ public class Main extends JPanel {
                             //creates a new vid folder
                             File folder = new File("vidFolder");
                             if (!folder.exists()) folder.mkdirs();
+                            //makes video file with new original name
                             String path = new File(folder, "video_" + count + ".mov").getAbsolutePath();
                             writer.open(path, VideoWriter.fourcc('M','J','P','G'), 20.0, frameMatrix.size());
                         }
@@ -210,14 +211,14 @@ public class Main extends JPanel {
                     }
                 }
             }
+            //stops the video feedback and recording only in the video frame
             if (writer.isOpened()) {
                 writer.release();
                 System.out.println("FINISHED: saved.");
             }
+        //end of thread
         }).start();
     }
-
-
 
     @Override
     protected void paintComponent(Graphics x)
@@ -225,6 +226,7 @@ public class Main extends JPanel {
         super.paintComponent(x);
         if(image != null)
             {
+                //
                 x.drawImage(image, 0, 0, 640, 360, this);
             }
     }
