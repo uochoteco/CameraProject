@@ -1,5 +1,5 @@
 package com.uochoteco;
-//imports: some of these were things i imported for troiuble shooting but didnt end up using
+//imports: some of these were things I imported for troiuble shooting but didnt end up using
 import nu.pattern.OpenCV;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
