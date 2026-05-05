@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import io.javalin.Javalin;
 
 
 public class Main extends JPanel {
@@ -32,6 +33,8 @@ public class Main extends JPanel {
     {
         //this sets up and checks if the imports worked
         OpenCV.loadShared();
+        //Javalin app = Javalin.create().start(8080);
+        //app.
         System.out.println("Hello world!");
         System.out.println("Version: " + Core.VERSION);
         //this line insantiates the window for the main camera

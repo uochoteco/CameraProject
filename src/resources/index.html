@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html> 
 <head>
     <title>Camera Local Website</title>
 </head>
 <body>
     <h1>Camera App Main Page</h1>
     <p>This is a camera app where you can take and save photos and videos.</p>
+
+    <div id="main-menu" class="screen">
+        <h1>Camera Control Center</h1>
+        <button onclick="showInstructions()">View Instructions</button>
+        <button class="start-btn" onclick="launchJavaApp()">START PROGRAM</button>
+    </div>
+
+    <div id="Instructions" class="screen" style="display: none;">
+        <h1>Instructions</h1>
+        <p>Press space to take a photo.</p>
+        <p>Then press space on the photo's window to save it.</p>
+        <p>Press v to take a video.</p>
+        <p>Press space to begin to save the video from that point onward until you press v to stop recording.</p>
+        <p>The photos and videos will be saved to a picFolder and vidFolder respectively</p>
+        <button onclick="showMainMenu()">Back to Main Menu</button>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
