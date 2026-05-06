@@ -15,7 +15,7 @@ function showMainMenu() {
 
 function launchJavaApp() {
     console.log("Contacting Java server...");
-    fetch("https://localhost:8080/start-camera").then(response => {
+    fetch("http://localhost:9090/start-camera").then(response => {
             if (response.ok) {
                 alert("Camera Launched!");
             }

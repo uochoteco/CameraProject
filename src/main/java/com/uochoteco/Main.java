@@ -33,7 +33,7 @@ public class Main extends JPanel {
     {
         //this sets up and connects it to the website
         OpenCV.loadShared();
-        Javalin app = Javalin.create(config -> {config.staticFiles.add("resources", io.javalin.http.staticfiles.Location.CLASSPATH);}).start(8080);
+        Javalin app = Javalin.create(config -> {config.staticFiles.add("/", io.javalin.http.staticfiles.Location.CLASSPATH);}).start(9090);
         app.get("/start-camera", ctx -> {new Thread(() -> {startCamera();}).start(); ctx.result("works");});
     }
 
