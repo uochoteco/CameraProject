@@ -31,10 +31,13 @@ public class Main extends JPanel {
     private BufferedImage image;
     public static void main(String[] args) 
     {
-        //this sets up and checks if the imports worked
+        //this sets up and connects it to the website
         OpenCV.loadShared();
-        //Javalin app = Javalin.create().start(8080);
-        //app.
+        Javalin app = Javalin.create(config -> {config.staticFiles.add("resources", io.javalin.http.staticfiles.Location.CLASSPATH);}).start(8080);
+        app.get("/start-camera", ctx -> {new Thread(() -> {startCamera();}).start(); ctx.result("works");});
+    }
+
+    public static void startCamera(){
         System.out.println("Hello world!");
         System.out.println("Version: " + Core.VERSION);
         //this line insantiates the window for the main camera
